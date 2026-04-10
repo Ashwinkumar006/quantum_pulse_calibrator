@@ -42,6 +42,13 @@ class EnvironmentState:
         return self._get_obs()
 
     def _get_obs(self) -> Observation:
+        if self.df is None:
+            return Observation(
+                df_head="",
+                columns=[],
+                missing_counts={},
+                task_id=self.current_task_idx + 1
+            )
         return Observation(
             df_head=self.df.head().to_string(),
             columns=list(self.df.columns),
@@ -51,30 +58,38 @@ class EnvironmentState:
 
     def step(self, action: Action) -> tuple[Observation, Reward, bool, dict]:
         try:
-            # Execute the code provided by the agent safely on the local df
-            local_vars = {'df': self.df.copy()}
+            # Handle case where df might be None
+            if self.df is None:
+                # Create an empty dataframe if None
+                local_vars = {'df': None}
+            else:
+                local_vars = {'df': self.df.copy()}
             exec(action.code, {}, local_vars)
             new_df = local_vars['df']
+            
+            # If new_df is None after execution, create empty dataframe
+            if new_df is None:
+                new_df = pd.DataFrame()
             
             # Grader Logic
             reward = self._grade(new_df)
             self.df = new_df
             return self._get_obs(), reward, True, {"reason": reward.reason, "success": reward.value > 0}
         except Exception as e:
-            return self._get_obs(), Reward(value=0.0, reason=str(e)), True, {"error": str(e), "success": False}
+            return self._get_obs(), Reward(value=0.15, reason=str(e)), True, {"error": str(e), "success": False}
 
     def _grade(self, df) -> Reward:
         if self.current_task_idx == 0:
             if 'net_pnl' in df.columns and (df['net_pnl'] == df['gross_pnl'] - df['fees']).all():
-                return Reward(value=1.0, reason="Success")
+                return Reward(value=0.85, reason="Success")
         elif self.current_task_idx == 1:
             if not df['reputation_score'].isnull().any() and (df['reputation_score'].iloc[1] == 0.0):
-                return Reward(value=1.0, reason="Success")
+                return Reward(value=0.85, reason="Success")
         elif self.current_task_idx == 2:
             if df['signal'].apply(lambda x: getattr(x, 'islower', lambda: False)()).all() or df['signal'].apply(lambda x: x == x.lower()).all() or df['signal'].str.islower().all():
-                return Reward(value=1.0, reason="Success")
-                
-        return Reward(value=0.0, reason="Task criteria not met")
+                return Reward(value=0.85, reason="Success")
+                 
+        return Reward(value=0.15, reason="Task criteria not met")
 
     def state(self) -> dict:
         return {

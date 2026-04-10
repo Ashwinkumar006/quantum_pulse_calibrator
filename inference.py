@@ -2,18 +2,23 @@ import os
 import json
 import requests
 from openai import OpenAI
+from dotenv import load_dotenv
+
+# Load environment variables from .env
+load_dotenv()
 
 # Mandatory variables
 API_BASE_URL = os.getenv("API_BASE_URL", "https://api.openai.com/v1")
 MODEL_NAME = os.getenv("MODEL_NAME", "gpt-4o")
 HF_TOKEN = os.getenv("HF_TOKEN")
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 LOCAL_IMAGE_NAME = os.getenv("LOCAL_IMAGE_NAME")
 
 # If testing locally
 ENV_API_URL = os.getenv("ENV_API_URL", "http://127.0.0.1:7860")
 
 client = OpenAI(
-    api_key=HF_TOKEN,
+    api_key=OPENAI_API_KEY or HF_TOKEN or "dummy-key",
     base_url=API_BASE_URL
 )
 
@@ -59,7 +64,8 @@ def run_task(task_id: int):
             model=MODEL_NAME,
             messages=[{"role": "user", "content": prompt}]
         )
-        code = response.choices[0].message.content.strip()
+        message_content = response.choices[0].message.content
+        code = message_content.strip() if message_content else ""
         
         # Strip markdown safely
         if '```' in code:
