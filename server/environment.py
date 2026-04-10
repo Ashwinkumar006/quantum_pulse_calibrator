@@ -61,20 +61,20 @@ class EnvironmentState:
             self.df = new_df
             return self._get_obs(), reward, True, {"reason": reward.reason, "success": reward.value > 0}
         except Exception as e:
-            return self._get_obs(), Reward(value=0.0, reason=str(e)), True, {"error": str(e), "success": False}
+            return self._get_obs(), Reward(value=0.01, reason=str(e)), True, {"error": str(e), "success": False}
 
     def _grade(self, df) -> Reward:
         if self.current_task_idx == 0:
             if 'net_pnl' in df.columns and (df['net_pnl'] == df['gross_pnl'] - df['fees']).all():
-                return Reward(value=1.0, reason="Success")
+                return Reward(value=0.99, reason="Success")
         elif self.current_task_idx == 1:
             if not df['reputation_score'].isnull().any() and (df['reputation_score'].iloc[1] == 0.0):
-                return Reward(value=1.0, reason="Success")
+                return Reward(value=0.99, reason="Success")
         elif self.current_task_idx == 2:
             if df['signal'].apply(lambda x: getattr(x, 'islower', lambda: False)()).all() or df['signal'].apply(lambda x: x == x.lower()).all() or df['signal'].str.islower().all():
-                return Reward(value=1.0, reason="Success")
+                return Reward(value=0.99, reason="Success")
                 
-        return Reward(value=0.0, reason="Task criteria not met")
+        return Reward(value=0.01, reason="Task criteria not met")
 
     def state(self) -> dict:
         return {
