@@ -1,6 +1,9 @@
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
+import os
+import sys
+sys.path.append(os.path.dirname(__file__))
 from environment import EnvironmentState, Action
 import logging
 
