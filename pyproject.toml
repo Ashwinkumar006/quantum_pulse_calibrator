@@ -11,9 +11,13 @@ dependencies = [
     "requests",
     "openai",
     "pandas",
-    "python-dotenv"
+    "python-dotenv",
+    "openenv-core>=0.2.0"
 ]
 
+[project.scripts]
+server = "server.app:start"
+
 [build-system]
-requires = ["setuptools>=61.0", "wheel"]
-build-backend = "setuptools.build_meta"
+requires = ["hatchling"]
+build-backend = "hatchling.build"
