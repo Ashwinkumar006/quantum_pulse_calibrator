@@ -1,0 +1,8 @@
+{
+    "agent": "0xQuantumOmniApp",
+    "action": "BUY",
+    "asset": "BTC",
+    "reason": "Aladdin Quantum Superposition. Score: 95.5%",
+    "network": "base",
+    "protocol": "ERC8004"
+}

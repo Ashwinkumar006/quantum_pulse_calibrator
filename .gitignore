@@ -1,0 +1,7 @@
+.env
+hf_upload.py
+node_modules/
+__pycache__/
+.vscode/
+.codex/
+*.log

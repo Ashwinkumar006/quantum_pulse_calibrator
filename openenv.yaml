@@ -1,0 +1,13 @@
+name: "AI Trading Agents Environment"
+description: "Simulates preparing data for autonomous trading agents, ERC-8004 validation, and PRISM signals."
+version: "1.0.0"
+tasks:
+  - id: 1
+    name: "Easy: Kraken CLI PnL Calculation"
+    difficulty: "easy"
+  - id: 2
+    name: "Medium: ERC-8004 Reputation Formatting"
+    difficulty: "medium"
+  - id: 3
+    name: "Hard: PRISM AI Signal Normalization"
+    difficulty: "hard"
