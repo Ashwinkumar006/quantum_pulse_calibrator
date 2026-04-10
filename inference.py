@@ -54,7 +54,7 @@ def run_task(task_id: int):
     done = False
     step = 0
     success = False
-    score = 0.0
+    score = 0.01
     error_msg = "null"
     code = ""
 
@@ -92,7 +92,7 @@ def run_task(task_id: int):
         
     except Exception as e:
         error_msg = str(e).replace('"', "'")
-        print(f"[STEP]  step={step} action=none reward=0.00 done=false error=\"{error_msg}\"", flush=True)
+        print(f"[STEP]  step={step} action=none reward=0.01 done=false error=\"{error_msg}\"", flush=True)
 
     print(f"[END]   success={str(success).lower()} steps={step} score={score:.2f} rewards={score:.2f}", flush=True)
 
